@@ -1,17 +1,19 @@
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormValues, formSchema, ProcessingStatus } from "@/types/form";
-import { uploadForm } from "@/services/api";
 import PDFForm from "./PDFForm";
 import SuccessScreen from "./SuccessScreen";
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { generatePDFasync, uploadFormAsync } from "@/services/api";
+import LetterTemplate from "./template/LetterTemplate";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const letterRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -29,8 +31,13 @@ const PDFFormContainer: React.FC = () => {
     setStatus("processing");
     try {
       // In a real application, this would call your backend API
-      const response = await uploadForm(data);
-      setPdfUrl(response.url);
+      console.log("Form data submitted:", data);
+      if (letterRef.current) {
+        const pdfBlob = await generatePDFasync(letterRef.current);
+        const pdfUrl = await uploadFormAsync(pdfBlob);
+        console.log("PDF Blob:", pdfBlob);
+        setPdfUrl("");
+      }
       setStatus("success");
       toast({
         title: "Success!",
@@ -51,7 +58,7 @@ const PDFFormContainer: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">PDF Filler and Submission Portal</CardTitle>
+          {/* <CardTitle className="text-2xl font-bold text-primary">PDF Filler and Submission Portal</CardTitle> */}
           <CardDescription>
             Fill out the form below to generate your legal document. Once completed, you'll receive a PDF copy.
           </CardDescription>
@@ -64,6 +71,16 @@ const PDFFormContainer: React.FC = () => {
           )}
         </CardContent>
       </Card>
+      <div className="mt-8" ref={letterRef}>
+        <LetterTemplate
+          name={form.getValues("name")}
+          date={form.getValues("date")?.toISOString().split('T')[0]}
+          signature={form.getValues("signature")}
+          addressLine1={form.getValues("addressLine1")}
+          addressLine2={form.getValues("addressLine2")}
+          addressLine3={form.getValues("addressLine3")}
+        />
+      </div>
     </div>
   );
 };

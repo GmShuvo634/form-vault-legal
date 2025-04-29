@@ -1,31 +1,51 @@
+import html2pdf from "html2pdf.js";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
 
-import { FormValues } from "@/types/form";
-import { PDFResponse } from "@/types/form";
+// Function for PDF upload
+export const uploadFormAsync = async (pdfBlob: Blob): Promise<string> => {
+  const pdfFile = new File([pdfBlob], "Legal_Letter.pdf", { type: "application/pdf" });
+  const formData = new FormData();
+  formData.append("file", pdfFile);
+  formData.append("upload_preset","legal_pdf"); // Replace with yours
+  formData.append("cloud_name", "diccuaubj"); // Replace with yours
 
-// Mock API function for PDF upload
-export async function uploadForm(data: FormValues): Promise<PDFResponse> {
-  // In a real application, this would call your backend API
-  
-  // Simulate an API call with a delay
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Simulate successful response
-      if (Math.random() > 0.1) { // 90% success rate for testing
-        resolve({
-          url: "https://res.cloudinary.com/sample/image/upload/v1612345678/sample.pdf",
-          public_id: "sample_pdf_12345"
-        });
-      } else {
-        // Simulate error
-        reject(new Error("Failed to process PDF"));
-      }
-    }, 2000); // 2 second delay to simulate processing time
-  });
-}
+  const res = await axios.post(`https://api.cloudinary.com/v1_1/diccuaubj/raw/upload`, formData);
+  if (res.status !== 200) {
+    toast({
+      title: "Error",
+      description: "There was an error uploading your PDF. Please try again.",
+      variant: "destructive",
+    });
+    throw new Error("Failed to upload PDF");
+  } else {
+    toast({
+      title: "Success!",
+      description: "Your PDF has been successfully uploaded.",
+    });
+  }
+
+  return res.data.secure_url; // The final downloadable URL
+};
+
 
 // Function to handle backend API integration (to be implemented later)
-export async function generatePDF(data: FormValues): Promise<Blob> {
-  // In a real application, this would call your backend API to generate PDF
-  // For now, we'll just throw an error since it's not implemented
-  throw new Error("PDF generation not implemented");
-}
+export const generatePDFasync = async (element: HTMLElement): Promise<Blob> => {
+  return new Promise((resolve) => {
+    const opt = {
+      margin: 0.5,
+      filename: "Legal_Letter.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    html2pdf()
+    .set(opt)
+    .from(element)
+    .outputPdf("blob")
+    .then((pdfBlob: Blob) => {
+      resolve(pdfBlob);
+    });
+  });
+};
