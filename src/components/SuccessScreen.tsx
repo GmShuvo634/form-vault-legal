@@ -5,7 +5,7 @@ import { CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SuccessScreenProps {
-  pdfFile: Blob;
+  pdfFile: File;
   email: string;
 }
 

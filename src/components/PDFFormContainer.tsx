@@ -7,12 +7,13 @@ import PDFForm from "./PDFForm";
 import SuccessScreen from "./SuccessScreen";
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { generatePDFasync, uploadFormAsync } from "@/services/api";
+import { generatePDFasync } from "@/services/api";
 import LetterTemplate from "./template/LetterTemplate";
+import { sendEmailWithAttachment } from "@/services/email";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
-  const [pdfFile, setPdfFile] = useState<Blob | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
   const letterRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<FormValues>({
@@ -34,6 +35,7 @@ const PDFFormContainer: React.FC = () => {
       console.log("Form data submitted:", data);
       if (letterRef.current) {
         const pdfFile = await generatePDFasync(letterRef.current);
+        await sendEmailWithAttachment(pdfFile);
         console.log("PDF Blob:", pdfFile);
         setPdfFile(pdfFile);
       }
