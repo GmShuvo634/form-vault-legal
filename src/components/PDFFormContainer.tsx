@@ -12,7 +12,7 @@ import LetterTemplate from "./template/LetterTemplate";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<Blob | null>(null);
   const letterRef = useRef<HTMLDivElement>(null);
   
   const form = useForm<FormValues>({
@@ -33,10 +33,9 @@ const PDFFormContainer: React.FC = () => {
       // In a real application, this would call your backend API
       console.log("Form data submitted:", data);
       if (letterRef.current) {
-        const pdfBlob = await generatePDFasync(letterRef.current);
-        const pdfUrl = await uploadFormAsync(pdfBlob);
-        console.log("PDF Blob:", pdfBlob);
-        setPdfUrl("");
+        const pdfFile = await generatePDFasync(letterRef.current);
+        console.log("PDF Blob:", pdfFile);
+        setPdfFile(pdfFile);
       }
       setStatus("success");
       toast({
@@ -64,14 +63,15 @@ const PDFFormContainer: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {status === "success" && pdfUrl ? (
-            <SuccessScreen pdfUrl={pdfUrl} email={form.getValues("email")} />
+          {status === "success" && pdfFile ? (
+            <SuccessScreen pdfFile={pdfFile} email={form.getValues("email")} />
           ) : (
             <PDFForm form={form} onSubmit={onSubmit} isSubmitting={status === "processing"} />
           )}
         </CardContent>
       </Card>
-      <div className="mt-8" ref={letterRef}>
+      <div className="hidden">
+      <div className="mt-8 " ref={letterRef}>
         <LetterTemplate
           name={form.getValues("name")}
           date={form.getValues("date")?.toISOString().split('T')[0]}
@@ -81,6 +81,8 @@ const PDFFormContainer: React.FC = () => {
           addressLine3={form.getValues("addressLine3")}
         />
       </div>
+      </div>
+      
     </div>
   );
 };

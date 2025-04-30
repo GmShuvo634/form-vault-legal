@@ -3,7 +3,7 @@ interface EmailData {
   to: string;
   subject: string;
   message: string;
-  pdfUrl: string;
+  attachment: string;
 }
 
 // Mock email service that simulates sending an email

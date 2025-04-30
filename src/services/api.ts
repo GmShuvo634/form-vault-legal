@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import html2pdf from "html2pdf.js";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
 
 // Function for PDF upload
-export const uploadFormAsync = async (pdfBlob: Blob): Promise<string> => {
-  const pdfFile = new File([pdfBlob], "Legal_Letter.pdf", { type: "application/pdf" });
+export const uploadFormAsync = async (pdfFile: File): Promise<string> => {
   const formData = new FormData();
   formData.append("file", pdfFile);
   formData.append("upload_preset","legal_pdf"); // Replace with yours
@@ -30,22 +30,28 @@ export const uploadFormAsync = async (pdfBlob: Blob): Promise<string> => {
 
 
 // Function to handle backend API integration (to be implemented later)
-export const generatePDFasync = async (element: HTMLElement): Promise<Blob> => {
+export const generatePDFasync = async (element: HTMLElement): Promise<File> => {
   return new Promise((resolve) => {
     const opt = {
-      margin: 0.5,
+      margin: 0,
+      enableLinks: true,
       filename: "Legal_Letter.pdf",
       image: { type: "jpeg", quality: 0.98 },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
     html2pdf()
-    .set(opt)
-    .from(element)
-    .outputPdf("blob")
-    .then((pdfBlob: Blob) => {
-      resolve(pdfBlob);
-    });
+      .set(opt)
+      .from(element)
+      .toPdf()
+      .get("pdf")
+      .then((pdf : any) => {
+        const blob = pdf.output("blob");
+        const file = new File([blob], "Legal_Letter.pdf", { type: "application/pdf" });
+        resolve(file);
+      });
   });
 };
+

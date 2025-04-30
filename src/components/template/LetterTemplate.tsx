@@ -70,6 +70,7 @@ const LetterTemplate = React.forwardRef<HTMLDivElement, LetterProps>((props, ref
         <p><strong>CC:</strong></p>
         <p>Donice Noelle Smith via email</p>
         <p>Benjamin Gutman via online portal or USPS</p>
+        <p>Harmeet Dhillon via usps</p>
       </div>
     </div>
   );
