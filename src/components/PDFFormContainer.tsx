@@ -6,7 +6,13 @@ import { FormValues, formSchema, ProcessingStatus } from "@/types/form";
 import PDFForm from "./PDFForm";
 import SuccessScreen from "./SuccessScreen";
 import { toast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 import { generatePDFasync } from "@/services/api";
 import LetterTemplate from "./template/LetterTemplate";
 import { sendEmailWithAttachment } from "@/services/email";
@@ -24,7 +30,6 @@ const PDFFormContainer: React.FC = () => {
       addressLine2: "",
       addressLine3: "",
       signature: "",
-      email: "",
     },
   });
 
@@ -35,41 +40,45 @@ const PDFFormContainer: React.FC = () => {
       console.log("Form data submitted:", data);
       if (letterRef.current) {
         const pdfFile = await generatePDFasync(letterRef.current);
-        await sendEmailWithAttachment(pdfFile);
+        await sendEmailWithAttachment(pdfFile, data);
         console.log("PDF Blob:", pdfFile);
         setPdfFile(pdfFile);
       }
       setStatus("success");
       toast({
         title: "Success!",
-        description: "Your form has been processed and a PDF has been generated.",
+        description:
+          "Your form has been processed and a PDF has been generated.",
       });
     } catch (error) {
       console.error("Error processing form:", error);
       setStatus("error");
       toast({
         title: "Error",
-        description: "There was an error processing your form. Please try again.",
+        description:
+          "There was an error processing your form. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-5">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
-          {/* <CardTitle className="text-2xl font-bold text-primary">PDF Filler and Submission Portal</CardTitle> */}
+          <CardTitle className="text-2xl font-bold text-primary">
+            PDF Filler and Submission Portal
+          </CardTitle>
           <CardDescription>
-            Fill out the form below to generate your legal document. Once completed, you'll receive a PDF copy.
+            Please complete this form to generate a letter to the court.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {status === "success" && pdfFile ? (
-            <SuccessScreen pdfFile={pdfFile} email={form.getValues("email")} />
-          ) : (
-            <PDFForm form={form} onSubmit={onSubmit} isSubmitting={status === "processing"} />
-          )}
+        <PDFForm
+              form={form}
+              onSubmit={onSubmit}
+              isSubmitting={status === "processing"}
+            />
         </CardContent>
       </Card>
       <div className="hidden">

@@ -11,7 +11,9 @@
   height: 100%;
   box-shadow: none;
 }
-
+.letter-header{
+  line-height: 1;
+}
 .letter-header,
 .letter-body,
 .letter-subject,
@@ -19,6 +21,9 @@
   margin-bottom: 1.5rem;
 }
 
+.letter-cc {
+  line-height: 1;
+}
 .letter-subject {
   font-style: italic;
 }

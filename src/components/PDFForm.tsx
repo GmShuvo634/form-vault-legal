@@ -1,15 +1,23 @@
-
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { Controller, UseFormReturn } from "react-hook-form";
 import { FormValues } from "@/types/form";
 import { Button } from "./ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "./ui/form";
 import { Input } from "./ui/input";
 import { format } from "date-fns";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "./ui/checkbox";
 
 interface PDFFormProps {
   form: UseFormReturn<FormValues>;
@@ -68,6 +76,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
+                      disabled={(date) => date < new Date()}
                       initialFocus
                       className={cn("p-3 pointer-events-auto")}
                     />
@@ -78,7 +87,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
             )}
           />
         </div>
-        
+
         {/* Address Fields */}
         <div className="space-y-4">
           <FormField
@@ -94,7 +103,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="addressLine2"
@@ -108,7 +117,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="addressLine3"
@@ -132,15 +141,20 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
             <FormItem>
               <FormLabel>Signature</FormLabel>
               <FormControl>
-                <Input placeholder="Type your full name as signature" {...field} />
+                <Input
+                  placeholder="Type your full name as signature"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>Please type your full legal name as your signature.</FormDescription>
+              <FormDescription>
+                Please type your full legal name as your signature.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Email Field */}
+        {/* Email Field
         <FormField
           control={form.control}
           name="email"
@@ -150,8 +164,34 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
               <FormControl>
                 <Input type="email" placeholder="your@email.com" {...field} />
               </FormControl>
-              <FormDescription>We'll send a copy of your completed form to this email address.</FormDescription>
+              <FormDescription>
+                We'll send a copy of your completed form to this email address.
+              </FormDescription>
               <FormMessage />
+            </FormItem>
+          )}
+        /> */}
+
+        <Controller
+          control={form.control}
+          name="agreement"
+          rules={{ required: "You must acknowledge this statement" }}
+          render={({ field: { onChange, value }, fieldState: { error } }) => (
+            <FormItem>
+              <div className="flex items-start space-x-2">
+                <FormControl>
+                  <Checkbox
+                    checked={value}
+                    onCheckedChange={onChange}
+                    id="agreement"
+                  />
+                </FormControl>
+                <FormLabel htmlFor="agreement" className="text-sm font-normal">
+                  I understand that this letter is intended to be served to the
+                  court and all parties.
+                </FormLabel>
+              </div>
+              <FormMessage>{error?.message}</FormMessage>
             </FormItem>
           )}
         />
