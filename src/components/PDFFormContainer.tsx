@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormValues, formSchema, ProcessingStatus } from "@/types/form";
-import { uploadForm } from "@/services/api";
 import PDFForm from "./PDFForm";
 import SuccessScreen from "./SuccessScreen";
 import { toast } from "@/hooks/use-toast";
@@ -13,11 +13,15 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { generatePDFasync } from "@/services/api";
+import LetterTemplate from "./template/LetterTemplate";
+import { sendEmailWithAttachment } from "@/services/email";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const letterRef = useRef<HTMLDivElement>(null);
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,8 +38,13 @@ const PDFFormContainer: React.FC = () => {
     setStatus("processing");
     try {
       // In a real application, this would call your backend API
-      const response = await uploadForm(data);
-      setPdfUrl(response.url);
+      console.log("Form data submitted:", data);
+      if (letterRef.current) {
+        const pdfFile = await generatePDFasync(letterRef.current);
+        await sendEmailWithAttachment(pdfFile);
+        console.log("PDF Blob:", pdfFile);
+        setPdfFile(pdfFile);
+      }
       setStatus("success");
       toast({
         title: "Success!",
@@ -66,8 +75,8 @@ const PDFFormContainer: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {status === "success" && pdfUrl ? (
-            <SuccessScreen pdfUrl={pdfUrl} email={form.getValues("email")} />
+          {status === "success" && pdfFile ? (
+            <SuccessScreen pdfFile={pdfFile} email={form.getValues("email")} />
           ) : (
             <PDFForm
               form={form}
@@ -77,6 +86,19 @@ const PDFFormContainer: React.FC = () => {
           )}
         </CardContent>
       </Card>
+      <div className="hidden">
+      <div className="mt-8 " ref={letterRef}>
+        <LetterTemplate
+          name={form.getValues("name")}
+          date={form.getValues("date")?.toISOString().split('T')[0]}
+          signature={form.getValues("signature")}
+          addressLine1={form.getValues("addressLine1")}
+          addressLine2={form.getValues("addressLine2")}
+          addressLine3={form.getValues("addressLine3")}
+        />
+      </div>
+      </div>
+      
     </div>
   );
 };

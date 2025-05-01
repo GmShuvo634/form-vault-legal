@@ -1,44 +1,58 @@
-
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Button } from "./ui/button";
 import { sendEmail } from "@/services/email";
 import { CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SuccessScreenProps {
-  pdfUrl: string;
+  pdfFile: File;
   email: string;
 }
 
-const SuccessScreen: React.FC<SuccessScreenProps> = ({ pdfUrl, email }) => {
-  useEffect(() => {
-    const sendEmailNotification = async () => {
-      try {
-        await sendEmail({
-          to: email,
-          subject: "Your Filed Legal PDF",
-          message: `Thank you for using our service! Your PDF has been generated and is available for download at: ${pdfUrl}`,
-          pdfUrl: pdfUrl,
-        });
-        toast({
-          title: "Email Sent",
-          description: `A confirmation email has been sent to ${email}`,
-        });
-      } catch (error) {
-        console.error("Error sending email:", error);
-        toast({
-          title: "Email Error",
-          description: "There was an issue sending the confirmation email. Your PDF is still available for download.",
-          variant: "destructive",
-        });
-      }
-    };
+const SuccessScreen: React.FC<SuccessScreenProps> = ({ pdfFile, email }) => {
+  const blobUrl = URL.createObjectURL(pdfFile);
 
-    sendEmailNotification();
-  }, [pdfUrl, email]);
+  // useEffect(() => {
+  //   const sendEmailNotification = async () => {
+  //     try {
+  //       const file = new File([pdfFile], "document.pdf", { type: "application/pdf" });
+  //       const reader = new FileReader();
+  //       const base64String = await new Promise<string>((resolve) => {
+  //         reader.onloadend = () => {
+  //           const base64 = reader.result?.toString().split(',')[1] || '';
+  //           resolve(base64);
+  //         };
+  //         reader.readAsDataURL(file);
+  //       });
+  //       await sendEmail({
+  //         to: email,
+  //         subject: "Your Filed Legal PDF",
+  //         message: "Thank you for using our service! Your PDF is attached to this email.",
+  //         attachment: base64String,
+  //       });
+  //       toast({
+  //         title: "Email Sent",
+  //         description: `A confirmation email has been sent to ${email}`,
+  //       });
+  //     } catch (error) {
+  //       console.error("Error sending email:", error);
+  //       toast({
+  //         title: "Email Error",
+  //         description: "There was an issue sending the confirmation email. Your PDF is still available for download.",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   };
+
+  //   sendEmailNotification();
+  // }, [pdfFile, email]);
 
   const handleDownload = () => {
-    window.open(pdfUrl, "_blank");
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = "Legal_letter.pdf";
+    a.click();
+    URL.revokeObjectURL(blobUrl);
   };
 
   return (

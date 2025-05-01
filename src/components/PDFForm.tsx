@@ -29,7 +29,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           {/* Name Field */}
           <FormField
             control={form.control}
@@ -56,9 +56,9 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant="outline"
+                        variant="outline" 
                         className={cn(
-                          "w-full pl-3 text-left font-normal",
+                          "w-full pl-3 text-left font-normal !mt-4",
                           !field.value && "text-muted-foreground"
                         )}
                       >
