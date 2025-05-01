@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,12 +28,12 @@ const Posts = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not admin
-  useEffect(() => {
-    if (!isLoading && !isAdmin) {
-      navigate("/login");
-    }
-  }, [isAdmin, isLoading, navigate]);
+  // // Redirect if not admin
+  // useEffect(() => {
+  //   if (!isLoading && !isAdmin) {
+  //     navigate("/login");
+  //   }
+  // }, [isAdmin, isLoading, navigate]);
 
   // Fetch posts
   useEffect(() => {
@@ -74,7 +75,7 @@ const Posts = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !isAdmin) return;
+    // if (!user || !isAdmin) return;
 
     setIsSubmitting(true);
     try {

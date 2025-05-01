@@ -196,6 +196,78 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
           )}
         />
 
+        {/* Acknowledgments */}
+        <div className="space-y-4">
+          <Controller
+            control={form.control}
+            name="oregonCitizen"
+            rules={{ required: "You must confirm you are an Oregon Citizen" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormItem>
+                <div className="flex items-start space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={value}
+                      onCheckedChange={onChange}
+                      id="oregonCitizen"
+                    />
+                  </FormControl>
+                  <FormLabel htmlFor="oregonCitizen" className="text-sm font-normal">
+                    I confirm that I am an Oregon Citizen
+                  </FormLabel>
+                </div>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="burdenAcknowledgment"
+            rules={{ required: "You must acknowledge this statement" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormItem>
+                <div className="flex items-start space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={value}
+                      onCheckedChange={onChange}
+                      id="burdenAcknowledgment"
+                    />
+                  </FormControl>
+                  <FormLabel htmlFor="burdenAcknowledgment" className="text-sm font-normal">
+                    I understand that the burden of proof is on Christine Kotek
+                  </FormLabel>
+                </div>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="issuesAcknowledgment"
+            rules={{ required: "You must acknowledge this statement" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <FormItem>
+                <div className="flex items-start space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={value}
+                      onCheckedChange={onChange}
+                      id="issuesAcknowledgment"
+                    />
+                  </FormControl>
+                  <FormLabel htmlFor="issuesAcknowledgment" className="text-sm font-normal">
+                    I understand that the issues of first impression need to be conclusively resolved
+                  </FormLabel>
+                </div>
+                <FormMessage>{error?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+        </div>
+
         <Button type="submit" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? "Processing..." : "Generate and Submit PDF"}
         </Button>

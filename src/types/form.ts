@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 // Form schema for validation
@@ -11,7 +10,18 @@ export const formSchema = z.object({
   addressLine1: z.string().min(1, "Address line 1 is required"),
   addressLine2: z.string().optional(),
   addressLine3: z.string().optional(),
-  agreement: z.boolean(),
+  agreement: z.boolean().refine((val) => val === true, {
+    message: "You must agree to submit this letter",
+  }),
+  oregonCitizen: z.boolean().refine((val) => val === true, {
+    message: "You must confirm you are an Oregon Citizen",
+  }),
+  burdenAcknowledgment: z.boolean().refine((val) => val === true, {
+    message: "You must acknowledge this statement",
+  }),
+  issuesAcknowledgment: z.boolean().refine((val) => val === true, {
+    message: "You must acknowledge this statement",
+  }),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
