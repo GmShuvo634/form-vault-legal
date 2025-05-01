@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("Letter@oustkotek.com");
+  const [password, setPassword] = useState<string>("admin");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
@@ -22,6 +23,51 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
+      toast({
+        title: "Login failed",
+        description: "Please check your credentials and try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createAdmin = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("https://nmpkkwxhxmayofjalagp.supabase.co/functions/v1/create-admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: "Letter@oustkotek.com",
+          password: "admin"
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Admin account created",
+          description: "You can now log in with the new credentials",
+        });
+      } else {
+        toast({
+          title: "Failed to create admin",
+          description: data.error || "An unknown error occurred",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating admin:", error);
+      toast({
+        title: "Error creating admin",
+        description: "Check console for details",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -59,9 +105,12 @@ const Login = () => {
               />
             </div>
           </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit" disabled={isLoading}>
+          <CardFooter className="flex flex-col space-y-2">
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+            <Button type="button" variant="outline" className="w-full" onClick={createAdmin} disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create Admin Account"}
             </Button>
           </CardFooter>
         </form>
