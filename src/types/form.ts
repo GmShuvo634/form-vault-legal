@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 // Form schema for validation
@@ -22,4 +23,21 @@ export type ProcessingStatus = "idle" | "processing" | "success" | "error";
 export type PDFResponse = {
   url: string;
   public_id: string;
+};
+
+// Admin types
+export type AdminUser = {
+  id: string;
+  email: string;
+  created_at: string;
+};
+
+export type Post = {
+  id: string;
+  description: string;
+  file_url: string | null;
+  file_name: string | null;
+  created_at: string;
+  updated_at: string;
+  admin_id: string;
 };
