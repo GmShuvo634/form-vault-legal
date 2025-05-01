@@ -79,13 +79,13 @@ const Posts = () => {
     setIsSubmitting(true);
     try {
       let fileUrl = null;
-      let fileName = null;
+      let displayFileName = null;
 
       // Upload file if exists
       if (file) {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const uniqueFileName = `${Math.random()}.${fileExt}`;
+        const filePath = uniqueFileName;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("post_attachments")
@@ -101,7 +101,7 @@ const Posts = () => {
           .getPublicUrl(filePath);
 
         fileUrl = urlData.publicUrl;
-        fileName = file.name;
+        displayFileName = file.name;
       }
 
       // Insert post
@@ -109,7 +109,7 @@ const Posts = () => {
         {
           description,
           file_url: fileUrl,
-          file_name: fileName,
+          file_name: displayFileName,
           admin_id: user.id,
         },
       ]);
