@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface EmailData {
   to: string;
@@ -31,9 +32,10 @@ export async function initEmailJS(): Promise<void> {
   console.log("EmailJS initialized");
 }
 
+import { FormValues } from '@/types/form';
 import emailjs from '@emailjs/browser';
 
-export const sendEmailWithAttachment = async (file: File) => {
+export const sendEmailWithAttachment = async (file: File, formData: FormValues) => {
   const reader = new FileReader();
 
   reader.onload = async () => {
@@ -48,16 +50,16 @@ export const sendEmailWithAttachment = async (file: File) => {
     console.log('Base64 PDF:', base64PDF.length / 1024 / 1024, 'MB'); // Log the size in MB
 
     const templateParams = {
-      to_name: 'John Doe',
-      from_name: 'Your App',
-      message: 'Here is your PDF!',
       to_email: 'gm.shuvo.ru.cse@gmail.com',
+      to_name: formData.name,
+      from_name: "Appellate Court Administrator",
+      message: 'Here is your PDF!',
       content: base64PDF // Extract base64 part
     };
 
     try {
       const response = await emailjs.send(
-        'service_eqowz5x',     // e.g., 'service_abc123'
+        'service_jthic1f',     // e.g., 'service_abc123'
         'template_814bsps',    // e.g., 'template_xyz456'
         templateParams,
         'tExxj-bheNbcXjn12'      // e.g., '12345_publicKey'

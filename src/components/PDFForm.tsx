@@ -76,7 +76,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) => date > new Date()}
+                      disabled={(date) => date < new Date()}
                       initialFocus
                       className={cn("p-3 pointer-events-auto")}
                     />

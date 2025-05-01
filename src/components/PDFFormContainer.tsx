@@ -41,7 +41,7 @@ const PDFFormContainer: React.FC = () => {
       console.log("Form data submitted:", data);
       if (letterRef.current) {
         const pdfFile = await generatePDFasync(letterRef.current);
-        await sendEmailWithAttachment(pdfFile);
+        await sendEmailWithAttachment(pdfFile, data);
         console.log("PDF Blob:", pdfFile);
         setPdfFile(pdfFile);
       }
