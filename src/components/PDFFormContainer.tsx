@@ -30,7 +30,6 @@ const PDFFormContainer: React.FC = () => {
       addressLine2: "",
       addressLine3: "",
       signature: "",
-      email: "",
     },
   });
 
@@ -75,15 +74,11 @@ const PDFFormContainer: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {status === "success" && pdfFile ? (
-            <SuccessScreen pdfFile={pdfFile} email={form.getValues("email")} />
-          ) : (
-            <PDFForm
+        <PDFForm
               form={form}
               onSubmit={onSubmit}
               isSubmitting={status === "processing"}
             />
-          )}
         </CardContent>
       </Card>
       <div className="hidden">

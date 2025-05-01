@@ -10,7 +10,6 @@ export const formSchema = z.object({
   addressLine1: z.string().min(1, "Address line 1 is required"),
   addressLine2: z.string().optional(),
   addressLine3: z.string().optional(),
-  email: z.string().email("Invalid email address").min(1, "Email is required"),
   agreement: z.boolean(),
 });
 

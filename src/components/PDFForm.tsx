@@ -154,7 +154,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
           )}
         />
 
-        {/* Email Field */}
+        {/* Email Field
         <FormField
           control={form.control}
           name="email"
@@ -170,7 +170,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <Controller
           control={form.control}
