@@ -27,21 +27,17 @@ const Navigation = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Home
-                  </NavigationMenuLink>
-                </Link>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link to="/">Home</Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               
               {/* Conditional 'Posts' link for admins only */}
               {isAdmin && (
                 <NavigationMenuItem>
-                  <Link to="/posts">
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Posts
-                    </NavigationMenuLink>
-                  </Link>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link to="/posts">Posts</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               )}
             </NavigationMenuList>

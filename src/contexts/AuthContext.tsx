@@ -60,19 +60,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkIfAdmin = async (userId: string) => {
     try {
+      // Use a direct query instead of relying on RLS policies
       const { data, error } = await supabase
-        .from('admin_users')
-        .select('*')
-        .eq('id', userId)
-        .single();
+        .rpc('is_admin', { user_id: userId });
       
       if (error) {
         console.error("Error checking admin status:", error);
-        setIsAdmin(false);
+        // Fallback - try direct query to the table
+        const fallbackCheck = await supabase
+          .from('admin_users')
+          .select('id')
+          .eq('id', userId)
+          .maybeSingle();
+        
+        setIsAdmin(!!fallbackCheck.data);
         return;
       }
       
-      setIsAdmin(!!data); // true if data exists (user is an admin)
+      setIsAdmin(!!data);
     } catch (error) {
       console.error("Error in admin check:", error);
       setIsAdmin(false);
