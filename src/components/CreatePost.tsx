@@ -7,12 +7,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useCreatePost } from "@/hooks/use-create-post"
+import { useCreatePost } from "@/hooks/use-create-post";
 const CreatePost = () => {
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const { user } = useAuth();
   const { mutate: createPost, isPending } = useCreatePost();
+
+  console.log("CreatePost", user?._id);
+  console.log("CreatePost", { description });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) setFile(e.target.files[0]);
@@ -22,9 +25,8 @@ const CreatePost = () => {
     e.preventDefault();
     // if (!user?.id) return;
 
-
     createPost(
-      { description: description, attachment: file, createdBy: user?.id },
+      { description: description, attachment: file },
       {
         onSuccess: () => {
           setDescription("");

@@ -9,6 +9,7 @@ export const useLoginMutation = () => {
       login(username, password),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 };

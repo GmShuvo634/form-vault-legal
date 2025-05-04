@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,18 +15,20 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/contexts/AuthContext";
 
 const Login = () => {
-  const [username, setUsername] = useState<string>("oustKotek");
-  const [password, setPassword] = useState<string>("admin");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [username, setUsername] = useState("oustKotek");
+  const [password, setPassword] = useState("admin");
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
   const { login } = useAuth();
-  const {user, isAuthenticated} = useUser();
+  const { isAuthenticated } = useUser();
 
-  console.log(user);
-
-  if (isAuthenticated) {
-    navigate("/");
-  }
+  // ✅ Navigate only after auth state updates
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,11 @@ const Login = () => {
     try {
       await login(username, password);
       navigate("/");
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+        variant: "default",
+      });
     } catch (error) {
       console.error("Login failed:", error);
       toast({
@@ -45,49 +52,6 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  // const createAdmin = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetch(
-  //       "https://nmpkkwxhxmayofjalagp.supabase.co/functions/v1/create-admin",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           email: "Letter@oustkotek.com",
-  //           password: "admin",
-  //         }),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       toast({
-  //         title: "Admin account created",
-  //         description: "You can now log in with the new credentials",
-  //       });
-  //     } else {
-  //       toast({
-  //         title: "Failed to create admin",
-  //         description: data.error || "An unknown error occurred",
-  //         variant: "destructive",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating admin:", error);
-  //     toast({
-  //       title: "Error creating admin",
-  //       description: "Check console for details",
-  //       variant: "destructive",
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -129,6 +93,7 @@ const Login = () => {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
+            {/* Optional Admin Account Creator */}
             {/* <Button
               type="button"
               variant="outline"

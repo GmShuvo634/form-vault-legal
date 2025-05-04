@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 export type CreatePostInput = {
   description: string;
   attachment?: File | null;
-  createdBy: string;
+  createdBy?: string;
 };
 
 export const useCreatePost = () => {

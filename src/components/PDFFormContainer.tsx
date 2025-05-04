@@ -15,6 +15,7 @@ import { generatePDFasync } from "@/services/api";
 import LetterTemplate from "./template/LetterTemplate";
 import { sendEmailWithAttachment } from "@/services/email.service";
 import CreatePost from "./CreatePost";
+import PostList from "./PostLIst";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
@@ -84,6 +85,9 @@ const PDFFormContainer: React.FC = () => {
           />
           <div className="mt-4">
             <CreatePost />
+          </div>
+          <div className="mt-4">
+            <PostList />
           </div>
         </CardContent>
       </Card>

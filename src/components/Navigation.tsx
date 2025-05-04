@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const Navigation = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   return (
     <div className="border-b">
@@ -29,13 +29,13 @@ const Navigation = () => {
               </NavigationMenuItem>
               
               {/* Conditional 'Posts' link for admins only */}
-              {isAdmin && (
+              {/* {isAuthenticated && (
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                     <Link to="/posts">Posts</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-              )}
+              )} */}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -44,9 +44,9 @@ const Navigation = () => {
           {user ? (
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
-                {isAdmin ? "Admin" : ""} {user.email}
+                {isAuthenticated ? user.username : ""}
               </span>
-              <Button variant="outline" onClick={() => signOut()}>
+              <Button variant="outline" onClick={() => logout()}>
                 Sign Out
               </Button>
             </div>

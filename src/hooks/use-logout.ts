@@ -8,6 +8,7 @@ export const useLogoutMutation = () => {
     mutationFn: logout,
     onSuccess: () => {
       queryClient.setQueryData(["auth", "user"], null);
+      queryClient.setQueryData(["posts"], null);
     },
   });
 };
