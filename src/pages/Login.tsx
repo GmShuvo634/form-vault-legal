@@ -1,25 +1,38 @@
-
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { useAuth, useUser } from "@/contexts/AuthContext";
 
 const Login = () => {
-  const [email, setEmail] = useState<string>("Letter@oustkotek.com");
+  const [username, setUsername] = useState<string>("oustKotek");
   const [password, setPassword] = useState<string>("admin");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { signIn } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const {user, isAuthenticated} = useUser();
+
+  console.log(user);
+
+  if (isAuthenticated) {
+    navigate("/");
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      await login(username, password);
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
@@ -33,63 +46,70 @@ const Login = () => {
     }
   };
 
-  const createAdmin = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch("https://nmpkkwxhxmayofjalagp.supabase.co/functions/v1/create-admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: "Letter@oustkotek.com",
-          password: "admin"
-        }),
-      });
+  // const createAdmin = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       "https://nmpkkwxhxmayofjalagp.supabase.co/functions/v1/create-admin",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           email: "Letter@oustkotek.com",
+  //           password: "admin",
+  //         }),
+  //       }
+  //     );
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        toast({
-          title: "Admin account created",
-          description: "You can now log in with the new credentials",
-        });
-      } else {
-        toast({
-          title: "Failed to create admin",
-          description: data.error || "An unknown error occurred",
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      console.error("Error creating admin:", error);
-      toast({
-        title: "Error creating admin",
-        description: "Check console for details",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     if (response.ok) {
+  //       toast({
+  //         title: "Admin account created",
+  //         description: "You can now log in with the new credentials",
+  //       });
+  //     } else {
+  //       toast({
+  //         title: "Failed to create admin",
+  //         description: data.error || "An unknown error occurred",
+  //         variant: "destructive",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating admin:", error);
+  //     toast({
+  //       title: "Error creating admin",
+  //       description: "Check console for details",
+  //       variant: "destructive",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">Admin Login</CardTitle>
-          <CardDescription>Sign in to access the admin dashboard</CardDescription>
+          <CardTitle className="text-2xl font-bold text-primary">
+            Admin Login
+          </CardTitle>
+          <CardDescription>
+            Sign in to access the admin dashboard
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input 
-                id="email"
-                type="email"
+              <Label htmlFor="username">User Name</Label>
+              <Input
+                id="username"
+                type="text"
                 placeholder="admin@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
@@ -109,9 +129,15 @@ const Login = () => {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
-            <Button type="button" variant="outline" className="w-full" onClick={createAdmin} disabled={isLoading}>
+            {/* <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={createAdmin}
+              disabled={isLoading}
+            >
               {isLoading ? "Creating..." : "Create Admin Account"}
-            </Button>
+            </Button> */}
           </CardFooter>
         </form>
       </Card>

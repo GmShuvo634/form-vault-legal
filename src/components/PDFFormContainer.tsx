@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormValues, formSchema, ProcessingStatus } from "@/types/form";
 import PDFForm from "./PDFForm";
-import SuccessScreen from "./SuccessScreen";
 import { toast } from "@/hooks/use-toast";
 import {
   Card,
@@ -14,7 +13,8 @@ import {
 } from "./ui/card";
 import { generatePDFasync } from "@/services/api";
 import LetterTemplate from "./template/LetterTemplate";
-import { sendEmailWithAttachment } from "@/services/email";
+import { sendEmailWithAttachment } from "@/services/email.service";
+import CreatePost from "./CreatePost";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
@@ -82,6 +82,9 @@ const PDFFormContainer: React.FC = () => {
             onSubmit={onSubmit}
             isSubmitting={status === "processing"}
           />
+          <div className="mt-4">
+            <CreatePost />
+          </div>
         </CardContent>
       </Card>
       <div className="hidden">

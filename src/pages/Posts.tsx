@@ -11,54 +11,16 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import PostCard from "@/components/PostCard";
+import { useGetAllPost } from "@/hooks/use-get-all-post";
 
-type Post = {
-  id: string;
-  description: string;
-  file_url: string | null;
-  file_name: string | null;
-  created_at: string;
-};
-
-const postsArray = [
-  {
-
-    id: "1",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    file_url: "https://example.com/test.jpg",
-    file_name: "test.jpg",
-    created_at: "2021-01-01",
-  },
-  {
-    id: "2",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    file_url: "https://example.com/test.jpg",
-    file_name: "test.jpg",
-    created_at: "2021-01-01",
-  },
-  {
-    id: "3",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    file_url: "https://example.com/test.jpg",
-    file_name: "test.jpg",
-    created_at: "2021-01-01",
-  },
-  {
-    id: "4",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
-    file_url: "https://example.com/test.jpg",
-    file_name: "test.jpg",
-    created_at: "2021-01-01",
-  },
-];
 const Posts = () => {
+  const { user } = useAuth();
   const [description, setDescription] = useState("");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
+
+  const {data: posts, isLoading} = useGetAllPost();
 
   // // Redirect if not admin
   // useEffect(() => {
@@ -66,38 +28,6 @@ const Posts = () => {
   //     navigate("/login");
   //   }
   // }, [isAdmin, isLoading, navigate]);
-
-  // Fetch posts
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from("posts")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        setPosts(data || []);
-      } catch (error: any) {
-        console.error("Error fetching posts:", error);
-        toast({
-          title: "Error loading posts",
-          description: error.message || "Failed to load posts",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (isAdmin) {
-      fetchPosts();
-    }
-  }, [isAdmin]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -161,7 +91,7 @@ const Posts = () => {
         throw fetchError;
       }
 
-      setPosts(newPosts || []);
+      // setPosts(newPosts || []);
       setDescription("");
       setFile(null);
       
@@ -237,11 +167,11 @@ const Posts = () => {
 
       {/* Posts List */}
       <h2 className="text-2xl font-bold mb-4">Posts</h2>
-      {postsArray.length === 0 ? (
+      {posts?.length === 0 ? (
         <div className="text-center text-gray-500">No posts yet</div>
       ) : (
         <div className="space-y-4">
-          {postsArray.map((post) => (
+          {posts?.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>

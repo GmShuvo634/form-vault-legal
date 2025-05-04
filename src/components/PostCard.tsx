@@ -13,17 +13,17 @@ const formatDate = (dateString: string) => {
 
 const PostCard = ({post}) => {
   return (
-    <Card key={post.id} className="overflow-hidden">
+    <Card key={post._id} className="overflow-hidden">
       <CardContent className="p-6">
         <div className="text-sm text-muted-foreground mb-2">
-          Posted on {formatDate(post.created_at)}
+          Posted on {formatDate(post.createdAt)}
         </div>
         <p className="text-lg mb-4">{post.description}</p>
-        {post.file_url && (
+        {post.attachment && (
           <div className="mt-4 flex justify-end ">
             <Button asChild variant="link" size="sm">
               <a
-                href={post.file_url}
+                href={post.attachment}
                 target="_blank"
                 rel="noopener noreferrer"
                 download={post.file_name || true}

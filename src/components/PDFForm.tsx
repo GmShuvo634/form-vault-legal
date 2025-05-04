@@ -26,6 +26,7 @@ interface PDFFormProps {
 }
 
 const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
+  const isDisabled = form.formState.isSubmitting || !form.formState.isValid;
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -268,7 +269,7 @@ const PDFForm: React.FC<PDFFormProps> = ({ form, onSubmit, isSubmitting }) => {
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button type="submit" className="w-full" disabled={isDisabled}>
           {isSubmitting ? "Processing..." : "Generate and Submit PDF"}
         </Button>
       </form>
