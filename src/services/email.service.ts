@@ -51,10 +51,8 @@ export const sendEmailWithAttachment = async (
       return;
     }
 
-    console.log("Base64 PDF:", base64PDF.length / 1024 / 1024, "MB"); // Log the size in MB
-
     const templateParams = {
-      to_email: "to_email",
+      to_email: "Letter@oustkotek.com",
       to_name: formData.name,
       from_name: "Appellate Court Administrator",
       message: "Here is your PDF!",
@@ -63,10 +61,10 @@ export const sendEmailWithAttachment = async (
 
     try {
       const response = await emailjs.send(
-        "service_jthic1f", // e.g., 'service_abc123'
-        "template_814bsps", // e.g., 'template_xyz456'
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         templateParams,
-        "tExxj-bheNbcXjn12" // e.g., '12345_publicKey'
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
       console.log("SUCCESS!", response.status, response.text);

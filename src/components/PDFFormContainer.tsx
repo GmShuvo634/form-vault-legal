@@ -33,26 +33,46 @@ const PDFFormContainer: React.FC = () => {
       addressLine2: "",
       addressLine3: "",
       signature: "",
+      agreement: false,
+      oregonCitizen: false,
+      burdenAcknowledgment: false,
+      issuesAcknowledgment: false,
     },
   });
 
   const onSubmit = async (data: FormValues) => {
     setStatus("processing");
     try {
-      // In a real application, this would call your backend API
       console.log("Form data submitted:", data);
+  
       if (letterRef.current) {
-        const pdfFile = await generatePDFasync(letterRef.current);
-        await sendEmailWithAttachment(pdfFile, data);
-        console.log("PDF Blob:", pdfFile);
-        setPdfFile(pdfFile);
+        // 1. Generate the PDF
+        const generatedPdf = await generatePDFasync(letterRef.current);
+  
+        // 2. Trigger the download immediately
+        const blobUrl = URL.createObjectURL(generatedPdf);
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = "Legal_Letter.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(blobUrl);
+  
+        // 3. Send email with attachment
+        await sendEmailWithAttachment(generatedPdf, data);
+  
+        // 4. Update state and toast
+        setPdfFile(generatedPdf);
+        form.reset();
+        setStatus("success");
+  
+        toast({
+          title: "Success!",
+          description:
+            "Your form has been processed. PDF downloaded and sent via email.",
+        });
       }
-      setStatus("success");
-      toast({
-        title: "Success!",
-        description:
-          "Your form has been processed and a PDF has been generated.",
-      });
     } catch (error) {
       console.error("Error processing form:", error);
       setStatus("error");
@@ -64,6 +84,7 @@ const PDFFormContainer: React.FC = () => {
       });
     }
   };
+  
 
   return (
     <div className="container mx-auto px-4 py-5">
@@ -79,14 +100,12 @@ const PDFFormContainer: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 mt-6">
+      <div className="grid lg:grid-cols-2 mt-6 gap-8">
         {/* place a video player */}
-        <div className="">
+        <div className="w-full flex items-center justify-center lg:items-start">
           <iframe
             src="https://player.cloudinary.com/embed/?cloud_name=diccuaubj&public_id=gxgj0rtaicrrxgrpl9tm&profile=cld-default"
-            width="640"
-            height="360"
-            className="rounded"
+            className="rounded  w-full h-[340px]"
             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
           ></iframe>
         </div>
@@ -110,14 +129,14 @@ const PDFFormContainer: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-      <div className="mt-4">
+      <div className="mt-8">
         {user ? (
           <div className="mt-4">
             <CreatePost />
           </div>
         ) : null}
       </div>
-      <div className="mt-4">
+      <div className="mt-8">
         <PostList />
       </div>
       <div className="hidden">
