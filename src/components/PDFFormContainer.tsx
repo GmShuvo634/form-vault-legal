@@ -16,11 +16,14 @@ import LetterTemplate from "./template/LetterTemplate";
 import { sendEmailWithAttachment } from "@/services/email.service";
 import CreatePost from "./CreatePost";
 import PostList from "./PostLIst";
+import { useAuth } from "@/contexts/AuthContext";
+import ReactPlayer from "react-player";
 
 const PDFFormContainer: React.FC = () => {
   const [status, setStatus] = useState<ProcessingStatus>("idle");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const letterRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -64,33 +67,59 @@ const PDFFormContainer: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-5">
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-primary">
+      <div className="mt-4">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
             Help Oust Kotek!
-          </CardTitle>
-          <CardDescription>
-            Explore the case files and submit a letter to the Oregon Supreme Court.
-            Please complete this form to generate a letter to the Oregon Supreme Court acknowledging the following:
-            1. You are an Oregon Citizen.
-            2. You know that the burden of proof is on Christine Kotek.
-            3. The issues of first impression need to be conclusively resolved.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PDFForm
-            form={form}
-            onSubmit={onSubmit}
-            isSubmitting={status === "processing"}
-          />
+          </h1>
+          <p className="text-lg text-gray-600">
+            Fill out the form below to create, store, and share your legal
+            documents with ease
+          </p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 mt-6">
+        {/* place a video player */}
+        <div className="">
+          <iframe
+            src="https://player.cloudinary.com/embed/?cloud_name=diccuaubj&public_id=gxgj0rtaicrrxgrpl9tm&profile=cld-default"
+            width="640"
+            height="360"
+            className="rounded"
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+          ></iframe>
+        </div>
+        <Card className="w-full max-w-4xl mx-auto border-none ">
+          <CardHeader>
+            <CardDescription>
+              Explore the case files and submit a letter to the Oregon Supreme
+              Court. Please complete this form to generate a letter to the
+              Oregon Supreme Court acknowledging the following: 1. You are an
+              Oregon Citizen. 2. You know that the burden of proof is on
+              Christine Kotek. 3. The issues of first impression need to be
+              conclusively resolved.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PDFForm
+              form={form}
+              onSubmit={onSubmit}
+              isSubmitting={status === "processing"}
+            />
+          </CardContent>
+        </Card>
+      </div>
+      <div className="mt-4">
+        {user ? (
           <div className="mt-4">
             <CreatePost />
           </div>
-          <div className="mt-4">
-            <PostList />
-          </div>
-        </CardContent>
-      </Card>
+        ) : null}
+      </div>
+      <div className="mt-4">
+        <PostList />
+      </div>
       <div className="hidden">
         <div className="mt-8 " ref={letterRef}>
           <LetterTemplate

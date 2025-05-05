@@ -13,12 +13,12 @@ const formatDate = (dateString: string) => {
 
 const PostCard = ({post}) => {
   return (
-    <Card key={post._id} className="overflow-hidden">
+    <Card key={post._id} className="overflow-hidden border-none shadow-sm">
       <CardContent className="p-6">
         <div className="text-sm text-muted-foreground mb-2">
           Posted on {formatDate(post.createdAt)}
         </div>
-        <p className="text-lg mb-4">{post.description}</p>
+        <p className="text-lg mb-3">{post.description}</p>
         {post.attachment && (
           <div className="mt-4 flex justify-end ">
             <Button asChild variant="link" size="sm">
