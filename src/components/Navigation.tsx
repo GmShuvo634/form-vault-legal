@@ -24,7 +24,7 @@ const Navigation = () => {
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link to="/">Oust Kotek</Link>
+                  <Link to="/">oustKotek.com</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               

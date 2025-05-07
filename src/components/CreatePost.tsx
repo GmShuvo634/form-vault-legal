@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,7 @@ const CreatePost = () => {
   const [file, setFile] = useState<File | null>(null);
   const { user } = useAuth();
   const { mutate: createPost, isPending } = useCreatePost();
-
-  console.log("CreatePost", user?._id);
-  console.log("CreatePost", { description });
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) setFile(e.target.files[0]);
@@ -23,7 +21,6 @@ const CreatePost = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // if (!user?.id) return;
 
     createPost(
       { description: description, attachment: file },
@@ -31,6 +28,9 @@ const CreatePost = () => {
         onSuccess: () => {
           setDescription("");
           setFile(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
           toast({ title: "Post created successfully" });
         },
         onError: (err: any) => {
@@ -65,7 +65,12 @@ const CreatePost = () => {
 
           <div className="space-y-2">
             <Label htmlFor="file">Attachment (Optional)</Label>
-            <Input id="file" type="file" onChange={handleFileChange} />
+            <Input
+              id="file"
+              type="file"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+            />
           </div>
 
           <Button type="submit" disabled={isPending}>
