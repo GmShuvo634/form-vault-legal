@@ -15,8 +15,8 @@ import { toast } from "@/hooks/use-toast";
 import { useAuth, useUser } from "@/contexts/AuthContext";
 
 const Login = () => {
-  const [username, setUsername] = useState("oustKotek");
-  const [password, setPassword] = useState("admin");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -42,7 +42,6 @@ const Login = () => {
         variant: "default",
       });
     } catch (error) {
-      console.error("Login failed:", error);
       toast({
         title: "Login failed",
         description: "Please check your credentials and try again",

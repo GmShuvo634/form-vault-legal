@@ -4,14 +4,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type UpdatePostInput = {
   id: string;
-  formData: FormData;
+  description: string,
+  attachment: File
 };
 
 export const useUpdatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, formData }: UpdatePostInput) => updatePost(id, formData),
+    mutationFn: ({ id, description, attachment }: UpdatePostInput) => updatePost(id, { description, attachment }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },

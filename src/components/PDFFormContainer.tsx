@@ -42,9 +42,7 @@ const PDFFormContainer: React.FC = () => {
 
   const onSubmit = async (data: FormValues) => {
     setStatus("processing");
-    try {
-      console.log("Form data submitted:", data);
-  
+    try {  
       if (letterRef.current) {
         // 1. Generate the PDF
         const generatedPdf = await generatePDFasync(letterRef.current);

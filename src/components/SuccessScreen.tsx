@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { Button } from "./ui/button";
-import { sendEmail } from "@/services/email.service";
 import { CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-
 interface SuccessScreenProps {
   pdfFile: File;
   email: string;

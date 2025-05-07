@@ -36,9 +36,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     window.location.href = "/login";
   };
 
-  console.log("AuthProvider", { data, isLoading });
-  console.log("AuthProvider", { user: data, isAuthenticated: !!data });
-
   return (
     <AuthContext.Provider
       value={{

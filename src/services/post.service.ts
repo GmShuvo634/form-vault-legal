@@ -13,7 +13,7 @@ export const getAllPosts = async () => {
   return data;
 };
 
-export const updatePost = async (id: string, formData: FormData) => {
+export const updatePost = async (id: string, formData: CreatePostInput) => {
   const { data } = await API.put(`/posts/${id}`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
