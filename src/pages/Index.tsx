@@ -1,5 +1,9 @@
 import PDFFormContainer from "@/components/PDFFormContainer";
 
+const getCurrentYear = () => {
+  const date = new Date();
+  return date.getFullYear();
+};
 const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -7,7 +11,7 @@ const Index = () => {
         <PDFFormContainer />
 
         <div className="mt-16 text-center text-sm text-gray-500">
-          <p>© 2025 PDF Filler and Submission Portal. All rights reserved.</p>
+          <p>`© {getCurrentYear()} All rights reserved oustKotek.com`</p>
         </div>
       </div>
     </div>
